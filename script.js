@@ -1,105 +1,57 @@
 const cardArray = [
-      { name: 'gato', emoji: '🐱' },
-      { name: 'gato', emoji: '🐱' },
-      { name: 'cachorro', emoji: '🐶' },
-      { name: 'cachorro', emoji: '🐶' },
-      { name: 'papagaio', emoji: '🦜' },
-      { name: 'papagaio', emoji: '🦜' },
-      { name: 'coelho', emoji: '🐰' },
-      { name: 'coelho', emoji: '🐰' },
-      { name: 'coracao', emoji: '❤️' },
-      { name: 'coracao', emoji: '❤️' },
-      { name: 'borboleta', emoji: '🦋' },
-      { name: 'borboleta', emoji: '🦋' }
-    ];
+{ name: 'gato', img: 'imagens/gato.png' },
+{ name: 'gato', img: 'imagens/gato.png' },
+{ name: 'cachorro', img: 'imagens/cachorro.png' },
+{ name: 'cachorro', img: 'imagens/cachorro.png' }
+];
+const grid = document.getElementById('grid');
+let cardsChosen = [], cardsChosenId = [], cardsWon = [];
+// Embaralha as cartas
+cardArray.sort(() => 0.5 - Math.random());
+function createBoard() {
+cardArray.forEach((card, index) => {
+const cardElement = document.createElement('div');
+cardElement.classList.add('card');
 
-    const grid = document.getElementById('grid');
-    let cardsChosen = [];
-    let cardsChosenId = [];
-    let cardsWon = [];
-
-    function shuffle(array) {
-      for (let i = array.length -1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i+1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
-
-    function createBoard() {
-      grid.innerHTML = '';
-      shuffle(cardArray);
-
-      cardArray.forEach((card, index) => {
-        const cardDiv = document.createElement('div');
-        cardDiv.classList.add('card');
-        cardDiv.setAttribute('data-id', index);
-
-        const cardInner = document.createElement('div');
-        cardInner.classList.add('card-inner');
-
-        const cardFront = document.createElement('div');
-        cardFront.classList.add('card-front');
-        cardFront.textContent = '❓';
-
-        const cardBack = document.createElement('div');
-        cardBack.classList.add('card-back');
-        cardBack.textContent = card.emoji;
-
-        cardInner.appendChild(cardFront);
-        cardInner.appendChild(cardBack);
-        cardDiv.appendChild(cardInner);
-
-        cardDiv.addEventListener('click', flipCard);
-
-        grid.appendChild(cardDiv);
-      });
-
-      cardsChosen = [];
-      cardsChosenId = [];
-      cardsWon = [];
-    }
-
-    function flipCard() {
-      const cardId = this.getAttribute('data-id');
-
-      if (cardsChosenId.includes(cardId) || this.classList.contains('matched')) {
-        return; // já virou ou já ganhou
-      }
-
-      this.classList.add('flip');
-      cardsChosen.push(cardArray[cardId].name);
-      cardsChosenId.push(cardId);
-
-      if (cardsChosen.length === 2) {
-        setTimeout(checkForMatch, 700);
-      }
-    }
-
-    function checkForMatch() {
-      const cards = document.querySelectorAll('.card');
-      const [firstId, secondId] = cardsChosenId;
-
-      if (cardsChosen[0] === cardsChosen[1] && firstId !== secondId) {
-        // Par encontrado
-        cards[firstId].classList.add('matched');
-        cards[secondId].classList.add('matched');
-        cardsWon.push(cardsChosen);
-      } else {
-        // Não é par, desvira
-        cards[firstId].classList.remove('flip');
-        cards[secondId].classList.remove('flip');
-      }
-
-      cardsChosen = [];
-      cardsChosenId = [];
-
-      if (cardsWon.length === cardArray.length / 2) {
-        setTimeout(() => alert('Parabéns! Você encontrou todos os pares!'), 300);
-      }
-    }
-
-    createBoard();
-  </script>
-</body>
-</html>
-
+cardElement.setAttribute('data-id', index);
+cardElement.addEventListener('click', flipCard);
+const front = document.createElement('div');
+front.classList.add('front');
+const back = document.createElement('div');
+back.classList.add('back');
+cardElement.append(front, back);
+grid.appendChild(cardElement);
+});
+}
+function flipCard() {
+const id = this.getAttribute('data-id');
+cardsChosen.push(cardArray[id].name);
+cardsChosenId.push(id);
+this.classList.add('flip');
+this.querySelector('.back').innerHTML =
+`<img src="${cardArray[id].img}" alt="${cardArray[id].name}">`;
+if (cardsChosen.length === 2) {
+setTimeout(checkForMatch, 500);
+}
+}
+function checkForMatch() {
+const cards = document.querySelectorAll('.card');
+const [firstId, secondId] = cardsChosenId;
+if (cardsChosen[0] === cardsChosen[1]) {
+cards[firstId].removeEventListener('click', flipCard);
+cards[secondId].removeEventListener('click', flipCard);
+cardsWon.push(cardsChosen);
+} else {
+cards[firstId].classList.remove('flip');
+cards[secondId].classList.remove('flip');
+cards[firstId].querySelector('.back').innerHTML = '';
+cards[secondId].querySelector('.back').innerHTML = '';
+}
+cardsChosen = [];
+cardsChosenId = [];
+if (cardsWon.length === cardArray.length / 2) {
+alert('Parabéns! Todos os pares encontrados!');
+}
+}
+// Inicializa o tabuleiro
+createBoard();
