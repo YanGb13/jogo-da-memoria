@@ -1,8 +1,12 @@
 const cardArray = [
-{ name: 'gato', img: 'imagens/gato.png' },
-{ name: 'gato', img: 'imagens/gato.png' },
-{ name: 'cachorro', img: 'imagens/cachorro.png' },
-{ name: 'cachorro', img: 'imagens/cachorro.png' }
+{ name: 'McQueen', img: 'imagens/Mcqueen.png' },
+{ name: 'McQueen', img: 'imagens/Mcqueen.png' },
+{ name: 'Saly', img: 'imagens/saly.png' },
+{ name: 'Saly', img: 'imagens/saly.png' },
+  { name: 'Mate', img: 'imagens/mate.png' },
+{ name: 'Mate', img: 'imagens/mate.png' },
+  { name: 'JacksonStorm', img: 'imagens/jackson storm.png' },
+{ name: 'JacksonStorm', img: 'imagens/jackson storm.png' }
 ];
 const grid = document.getElementById('grid');
 let cardsChosen = [], cardsChosenId = [], cardsWon = [];
